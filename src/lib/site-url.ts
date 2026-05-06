@@ -1,4 +1,4 @@
-const DEFAULT_SITE_ORIGIN = 'http://127.0.0.1:3003'
+const DEFAULT_SITE_ORIGIN = 'http://127.0.0.1:3004'
 
 function normalizeOrigin(raw?: string): string {
   if (!raw) return DEFAULT_SITE_ORIGIN

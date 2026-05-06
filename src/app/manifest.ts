@@ -1,11 +1,11 @@
 import type { MetadataRoute } from 'next'
-import { SITE_DOMAIN, SITE_NAME_ZH } from '@/config/site-brand'
+import { SITE_DOMAIN, SITE_NAME } from '@/config/site-brand'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: SITE_NAME_ZH,
-    short_name: SITE_NAME_ZH,
-    description: `${SITE_DOMAIN} 在线工具箱，收录常用格式转换、编码解码、文本处理与开发辅助工具。`,
+    name: SITE_NAME.en,
+    short_name: SITE_NAME.en,
+    description: `${SITE_DOMAIN} online toolkit for format conversion, encoding, text processing, and developer workflows.`,
     start_url: '/',
     scope: '/',
     display: 'standalone',

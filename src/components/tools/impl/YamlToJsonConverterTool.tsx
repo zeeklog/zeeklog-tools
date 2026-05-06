@@ -4,18 +4,20 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import { yamlToJson } from '@/lib/tools/logic/structured-data'
 
 export function YamlToJsonConverterTool() {
+  const locale = useToolLocale()
   const [yaml, setYaml] = useState('hello: world')
   const outRef = useRef<ToolCodeEditorHandle | null>(null)
   const { out, err } = useMemo(() => {
     try {
       return { out: yaml.trim() === '' ? '' : yamlToJson(yaml), err: '' }
     } catch (e) {
-      return { out: '', err: e instanceof Error ? e.message : 'YAML 无效' }
+      return { out: '', err: e instanceof Error ? e.message : locale === 'zh' ? 'YAML 无效' : 'Invalid YAML' }
     }
-  }, [yaml])
+  }, [yaml, locale])
 
   return (
     <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>

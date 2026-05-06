@@ -4,18 +4,20 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import { tomlToJson } from '@/lib/tools/logic/structured-data'
 
 export function TomlToJsonTool() {
+  const locale = useToolLocale()
   const [toml, setToml] = useState('a = 1')
   const outRef = useRef<ToolCodeEditorHandle | null>(null)
   const { out, err } = useMemo(() => {
     try {
       return { out: toml.trim() === '' ? '' : tomlToJson(toml), err: '' }
     } catch (e) {
-      return { out: '', err: e instanceof Error ? e.message : 'TOML 无效' }
+      return { out: '', err: e instanceof Error ? e.message : locale === 'zh' ? 'TOML 无效' : 'Invalid TOML' }
     }
-  }, [toml])
+  }, [toml, locale])
 
   return (
     <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>

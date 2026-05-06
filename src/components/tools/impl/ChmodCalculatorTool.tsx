@@ -8,6 +8,7 @@ import {
   computeChmodSymbolicRepresentation,
   defaultChmodPermissions,
 } from '@/lib/tools/logic/chmod-calculator'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 const SCOPES: { scope: ChmodScope; title: string }[] = [
   { scope: 'read', title: 'Read (4)' },
@@ -24,6 +25,7 @@ const GROUP_LABEL: Record<ChmodGroup, string> = {
 }
 
 export function ChmodCalculatorTool() {
+  const locale = useToolLocale()
   const [permissions, setPermissions] = useState(defaultChmodPermissions)
 
   const octal = useMemo(() => computeChmodOctalRepresentation({ permissions }), [permissions])
@@ -82,7 +84,7 @@ export function ChmodCalculatorTool() {
           onClick={() => void navigator.clipboard.writeText(chmodCmd)}
           className="rounded border border-gray-200 px-2 py-0.5 text-xs"
         >
-          复制
+          {locale === 'zh' ? '复制' : 'Copy'}
         </button>
       </div>
     </div>

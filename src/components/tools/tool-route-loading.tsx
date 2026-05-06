@@ -6,7 +6,7 @@ export function ToolRouteLoading() {
       role="status"
       aria-live="polite"
     >
-      正在载入工具…
+      Loading tool…
     </div>
   )
 }

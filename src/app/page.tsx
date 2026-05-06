@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
-import catalog from '@/lib/tools/catalog.json'
 import { ToolsIndexContent } from '@/components/tools/ToolsIndexContent'
+import { t } from '@/lib/i18n'
+import { getRequestLocale } from '@/lib/request-locale'
+import { getSiteName, SITE_DOMAIN } from '@/config/site-brand'
+import { getTools } from '@/lib/tools/registry'
 import { getSiteBaseUrl, getToolsIndexKeywords } from '@/lib/tools/tool-page-seo'
 import { serializeJsonLdForScript } from '@/lib/seo-utils'
-import { SITE_DOMAIN, SITE_NAME_ZH } from '@/config/site-brand'
 
 function trimMetaDescription(s: string, max = 158): string {
   const t = s.replace(/\s+/g, ' ').trim()
@@ -11,68 +13,75 @@ function trimMetaDescription(s: string, max = 158): string {
   return `${t.slice(0, Math.max(0, max - 1)).trimEnd()}…`
 }
 
-const homeCanonical = `${getSiteBaseUrl()}/`
-const homeDescriptionRaw = `${SITE_DOMAIN} 在线工具箱收录 ${catalog.length} 个常用工具，覆盖格式转换、编码解码、文本处理、网络诊断与图片辅助等常见场景。`
-const homeDescription = trimMetaDescription(homeDescriptionRaw)
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const i18n = t(locale)
+  const siteName = getSiteName(locale)
+  const toolCount = getTools(locale).length
+  const description = trimMetaDescription(`${SITE_DOMAIN} ${i18n.homeMetaDescription}`)
 
-export const metadata: Metadata = {
-  title: {
-    absolute: `${SITE_NAME_ZH}（${catalog.length}+）｜格式转换、编码解码、文本处理与开发辅助`,
-  },
-  description: homeDescription,
-  robots: { index: true, follow: true },
-  keywords: getToolsIndexKeywords(),
-  alternates: { canonical: '/' },
-  openGraph: {
-    title: `${SITE_NAME_ZH} | 常用工具首页`,
-    description: `${SITE_DOMAIN} 在线工具箱，按分类整理常用格式转换、编码解码、文本处理、网络诊断与图片辅助工具。`,
-    type: 'website',
-    siteName: SITE_NAME_ZH,
-    url: '/',
-  },
-  twitter: {
-    card: 'summary',
-    title: `${SITE_NAME_ZH} | 常用工具首页`,
-    description: `${SITE_DOMAIN} 在线工具箱，常用格式转换、编码解码、文本处理、网络诊断与图片辅助工具集合。`,
-  },
-}
-
-function homeJsonLd() {
-  const site = getSiteBaseUrl()
-  const cap = 24
   return {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: SITE_NAME_ZH,
-    description: homeDescription,
-    url: homeCanonical,
-    isPartOf: {
-      '@type': 'WebSite',
-      name: SITE_NAME_ZH,
-      url: site,
+    title: {
+      absolute: `${siteName} (${toolCount}+)`,
     },
-    mainEntity: {
-      '@type': 'ItemList',
-      numberOfItems: catalog.length,
-      itemListElement: catalog.slice(0, cap).map((t, i) => ({
-        '@type': 'ListItem',
-        position: i + 1,
-        name: t.title,
-        item: `${site}/tools/${t.slug}`,
-      })),
+    description,
+    robots: { index: true, follow: true },
+    keywords: getToolsIndexKeywords(locale),
+    alternates: { canonical: '/' },
+    openGraph: {
+      title: `${siteName} | ${i18n.homeOgTitle}`,
+      description,
+      type: 'website',
+      siteName,
+      url: '/',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${siteName} | ${i18n.homeOgTitle}`,
+      description,
     },
   }
 }
 
-const HOME_JSON_LD = homeJsonLd()
+export const dynamic = 'force-dynamic'
 
-export const dynamic = 'force-static'
+export default async function HomePage() {
+  const locale = await getRequestLocale()
+  const i18n = t(locale)
+  const siteName = getSiteName(locale)
+  const tools = getTools(locale)
+  const site = getSiteBaseUrl()
+  const homeCanonical = `${site}/`
+  const homeDescription = trimMetaDescription(`${SITE_DOMAIN} ${i18n.homeMetaDescription}`)
+  const cap = 24
 
-export default function HomePage() {
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: siteName,
+    description: homeDescription,
+    url: homeCanonical,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteName,
+      url: site,
+    },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: tools.length,
+      itemListElement: tools.slice(0, cap).map((tool, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: tool.title,
+        item: `${site}/tools/${tool.slug}`,
+      })),
+    },
+  }
+
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLdForScript(HOME_JSON_LD) }} />
-      <ToolsIndexContent />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLdForScript(homeJsonLd) }} />
+      <ToolsIndexContent locale={locale} />
     </>
   )
 }

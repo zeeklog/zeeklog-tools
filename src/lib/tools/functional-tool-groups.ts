@@ -1,4 +1,5 @@
 import type { ToolDefinition } from '@/lib/tools/types'
+import type { Locale } from '@/lib/i18n'
 
 export type FunctionalGroup = {
   id: string
@@ -6,16 +7,22 @@ export type FunctionalGroup = {
   pick: (tool: ToolDefinition) => boolean
 }
 
-/** 与 `ToolsIndexContent` 中分组逻辑一致；最后一组为「图片文件通用工具」（承接其余全部工具） */
-export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
+type FunctionalGroupTemplate = {
+  id: string
+  title: Record<Locale, string>
+  pick: (tool: ToolDefinition) => boolean
+}
+
+/** 与 `ToolsIndexContent` 中分组逻辑一致；最后一组承接其余全部工具 */
+const FUNCTIONAL_GROUPS_TEMPLATE: FunctionalGroupTemplate[] = [
   {
     id: 'address-generators',
-    title: '地址生成器',
+    title: { en: 'Address Generators', zh: '地址生成器' },
     pick: (tool) => tool.category === 'address',
   },
   {
     id: 'serialization-and-data-exchange',
-    title: '数据序列化与交换',
+    title: { en: 'Serialization & Data Exchange', zh: '数据序列化与交换' },
     pick: (tool) =>
       [
         'json-',
@@ -34,7 +41,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'encoding-and-escaping',
-    title: '编码、转义与内容转换',
+    title: { en: 'Encoding, Escaping & Content Conversion', zh: '编码、转义与内容转换' },
     pick: (tool) =>
       [
         'base64',
@@ -56,7 +63,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'security-and-identity',
-    title: '安全、身份与凭证',
+    title: { en: 'Security, Identity & Credentials', zh: '安全、身份与凭证' },
     pick: (tool) =>
       [
         'hash-text',
@@ -77,7 +84,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'network-and-protocol',
-    title: '网络协议与诊断',
+    title: { en: 'Network Protocols & Diagnostics', zh: '网络协议与诊断' },
     pick: (tool) =>
       [
         'dns-lookup',
@@ -99,7 +106,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'developer-productivity',
-    title: '开发效率与工程辅助',
+    title: { en: 'Developer Productivity', zh: '开发效率与工程辅助' },
     pick: (tool) =>
       [
         'code-formatter',
@@ -122,7 +129,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'text-doc-and-content',
-    title: '文本、文档与内容生产',
+    title: { en: 'Text, Docs & Content', zh: '文本、文档与内容生产' },
     pick: (tool) =>
       [
         'lorem-ipsum-generator',
@@ -139,12 +146,12 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'image-watermark-removal',
-    title: '图片去水印',
+    title: { en: 'Watermark Removal', zh: '图片去水印' },
     pick: (tool) => tool.slug.includes('watermark-remover'),
   },
   {
     id: 'media-and-visual-assets',
-    title: '媒体与可视化资产',
+    title: { en: 'Media & Visual Assets', zh: '媒体与可视化资产' },
     pick: (tool) =>
       [
         'qrcode-generator',
@@ -157,7 +164,7 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'math-time-and-units',
-    title: '数学、时间与单位计算',
+    title: { en: 'Math, Time & Units', zh: '数学、时间与单位计算' },
     pick: (tool) =>
       [
         'math-evaluator',
@@ -174,7 +181,15 @@ export const FUNCTIONAL_GROUPS: FunctionalGroup[] = [
   },
   {
     id: 'general-tools',
-    title: '图片文件通用工具',
+    title: { en: 'General Tools', zh: '图片文件通用工具' },
     pick: () => true,
   },
 ]
+
+export function getFunctionalGroups(locale: Locale): FunctionalGroup[] {
+  return FUNCTIONAL_GROUPS_TEMPLATE.map((group) => ({
+    id: group.id,
+    title: group.title[locale],
+    pick: group.pick,
+  }))
+}

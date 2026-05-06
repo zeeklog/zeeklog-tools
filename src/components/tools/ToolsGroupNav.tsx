@@ -1,3 +1,6 @@
+import type { Locale } from '@/lib/i18n'
+import { t } from '@/lib/i18n'
+
 type GroupNavItem = {
   id: string
   title: string
@@ -6,11 +9,13 @@ type GroupNavItem = {
 
 type ToolsGroupNavProps = {
   groups: GroupNavItem[]
+  locale: Locale
 }
 
-export function ToolsGroupNav({ groups }: ToolsGroupNavProps) {
+export function ToolsGroupNav({ groups, locale }: ToolsGroupNavProps) {
+  const i18n = t(locale)
   return (
-    <nav className="space-y-1.5" aria-label="工具功能分组">
+    <nav className="space-y-1.5" aria-label={i18n.groupNavAriaLabel}>
       {groups.map((group) => (
         <a
           key={group.id}

@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 import type { ReactNode } from 'react'
+import type { Locale } from '@/lib/i18n'
+import { t } from '@/lib/i18n'
 import type { ToolDefinition } from '@/lib/tools/types'
-import { TOOL_CATEGORY_LABEL } from '@/lib/tools/types'
+import { getToolCategoryLabel } from '@/lib/tools/types'
 import { TOOL_CATEGORIES_ORDER, toolsInCategory } from '@/lib/tools/registry'
 import type { ToolFaqItem } from '@/lib/tools/tool-page-content'
 import { getToolStructuredDataGraph, getSiteBaseUrl } from '@/lib/tools/tool-page-seo'
@@ -17,6 +19,7 @@ type ToolShellProps = {
   faq: ToolFaqItem[]
   featureKeywords: string[]
   currentSlug?: string
+  locale: Locale
   children: ReactNode
 }
 
@@ -27,9 +30,11 @@ export function ToolShell({
   faq,
   featureKeywords,
   currentSlug,
+  locale,
   children,
 }: ToolShellProps) {
-  const categoryLabel = TOOL_CATEGORY_LABEL[tool.category]
+  const i18n = t(locale)
+  const categoryLabel = getToolCategoryLabel(tool.category, locale)
   const site = getSiteBaseUrl()
   const pageUrl = `${site}/tools/${tool.slug}`
   const structured = getToolStructuredDataGraph({
@@ -50,13 +55,13 @@ export function ToolShell({
         className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-48 max-w-4xl rounded-full bg-gradient-to-b from-orange-200/25 via-amber-100/15 to-transparent blur-3xl"
         aria-hidden
       />
-      <nav aria-label="工具页导航">
+      <nav aria-label={i18n.toolPageNavLabel}>
         <Link
           href="/"
           className="relative mb-6 inline-flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-sm font-medium text-orange-700 transition hover:bg-orange-50 hover:text-orange-900"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden />
-          返回首页
+          {i18n.backHome}
         </Link>
       </nav>
 
@@ -88,7 +93,7 @@ export function ToolShell({
 
           <section className="relative mt-10 rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-sm sm:p-6" aria-labelledby="tool-features-heading">
             <h2 id="tool-features-heading" className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
-              功能与特点
+              {i18n.toolFeatures}
             </h2>
             <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
               {featureKeywords.map((k) => (
@@ -102,15 +107,15 @@ export function ToolShell({
             aria-labelledby="tool-how-heading"
           >
             <h2 id="tool-how-heading" className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
-              如何使用
+              {i18n.toolHowTo}
             </h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
-              <li>在上方「在线使用」区域输入或粘贴待处理内容，或按界面提示上传文件。</li>
-              <li>根据需要调整选项，点击对应按钮完成格式化、转换、计算或生成。</li>
-              <li>在页面中直接查看结果；若工具提供，可复制或下载输出内容。</li>
+              <li>{i18n.toolUseStep1}</li>
+              <li>{i18n.toolUseStep2}</li>
+              <li>{i18n.toolUseStep3}</li>
             </ol>
             <p className="mt-4 text-sm leading-relaxed text-slate-600">
-              本工具在浏览器中运行，处理逻辑尽量在本地完成；涉及敏感数据时，请结合业务安全要求评估后使用。
+              {i18n.toolUseNote}
             </p>
           </section>
 
@@ -119,7 +124,7 @@ export function ToolShell({
             aria-labelledby="tool-faq-heading"
           >
             <h2 id="tool-faq-heading" className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
-              常见问题
+              {i18n.toolFaq}
             </h2>
             <dl className="mt-4 space-y-4 text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
               {faq.map((item) => (
@@ -138,19 +143,19 @@ export function ToolShell({
         aria-labelledby="tool-related-heading"
       >
         <h2 id="tool-related-heading" className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
-          推荐与相关工具
+          {i18n.toolRelated}
         </h2>
         <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-          按分类继续浏览站内其他工具。
+          {i18n.toolRelatedHint}
         </p>
         <div className="mt-6 space-y-8">
           {TOOL_CATEGORIES_ORDER.map((category) => {
-            const list = toolsInCategory(category)
+            const list = toolsInCategory(category, locale)
             if (!list.length) return null
             return (
               <div key={category}>
                 <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-orange-800/90">
-                  {TOOL_CATEGORY_LABEL[category]}
+                  {getToolCategoryLabel(category, locale)}
                 </h3>
                 <ul className="flex flex-wrap gap-2">
                   {list.map((t) => {
@@ -188,7 +193,7 @@ export function ToolShell({
         aria-labelledby="tool-about-heading"
       >
         <h2 id="tool-about-heading" className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
-          关于本工具
+          {i18n.toolAbout}
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">{longIntro}</p>
       </section>
