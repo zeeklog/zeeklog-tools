@@ -5,17 +5,19 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror } from '@/components/tools/ToolCodeMirror'
 import { toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function MathEvaluatorTool() {
+  const locale = useToolLocale()
   const [expr, setExpr] = useState('2 + 2 * 3')
   const outRef = useRef<HTMLParagraphElement>(null)
   const { out, err } = useMemo(() => {
     try {
       return { out: String(evaluate(expr)), err: '' }
     } catch (e) {
-      return { out: '', err: e instanceof Error ? e.message : '计算错误' }
+      return { out: '', err: e instanceof Error ? e.message : locale === 'zh' ? '计算错误' : 'Calculation error' }
     }
-  }, [expr])
+  }, [expr, locale])
 
   return (
     <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>

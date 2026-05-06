@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function EmojiPickerTool() {
+  const locale = useToolLocale()
   const [list, setList] = useState<string[]>([])
   const [q, setQ] = useState('')
 
@@ -19,7 +21,12 @@ export function EmojiPickerTool() {
 
   return (
     <div className="space-y-4">
-      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="过滤（部分 emoji 可搜）" className="w-full rounded border px-3 py-2 text-sm" />
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder={locale === 'zh' ? '过滤（部分 emoji 可搜）' : 'Filter (supports partial emoji search)'}
+        className="w-full rounded border px-3 py-2 text-sm"
+      />
       <div className="max-h-[480px] overflow-auto rounded-lg border bg-white p-2 text-2xl leading-relaxed">
         {filtered.slice(0, 800).map((e) => (
           <button
@@ -33,7 +40,11 @@ export function EmojiPickerTool() {
           </button>
         ))}
       </div>
-      <p className="text-xs text-gray-500">点击复制到剪贴板。共 {list.length} 个，当前显示 {Math.min(800, filtered.length)} 个。</p>
+      <p className="text-xs text-gray-500">
+        {locale === 'zh'
+          ? `点击复制到剪贴板。共 ${list.length} 个，当前显示 ${Math.min(800, filtered.length)} 个。`
+          : `Click to copy to clipboard. Total ${list.length}, showing ${Math.min(800, filtered.length)}.`}
+      </p>
     </div>
   )
 }

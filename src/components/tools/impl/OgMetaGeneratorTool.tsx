@@ -5,8 +5,10 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolInputClass, toolLabelClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function OgMetaGeneratorTool() {
+  const locale = useToolLocale()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
@@ -63,8 +65,12 @@ export function OgMetaGeneratorTool() {
           />
         </label>
       </div>
-      <button type="button" onClick={() => void navigator.clipboard.writeText(html)} className="rounded bg-orange-500 px-3 py-1.5 text-sm text-white">
-        复制 HTML
+      <button
+        type="button"
+        onClick={() => void navigator.clipboard.writeText(html)}
+        className="rounded bg-orange-500 px-3 py-1.5 text-sm text-white"
+      >
+        {locale === 'zh' ? '复制 HTML' : 'Copy HTML'}
       </button>
     </ToolShortcutArea>
   )

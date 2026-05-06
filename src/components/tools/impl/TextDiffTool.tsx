@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function TextDiffTool() {
+  const locale = useToolLocale()
   const [left, setLeft] = useState('line1\nline2')
   const [right, setRight] = useState('line1\nline2 changed')
   const [chunks, setChunks] = useState<Change[]>([])
@@ -31,7 +33,7 @@ export function TextDiffTool() {
 
   return (
     <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>
-      {loading ? <p className="text-sm text-slate-600">正在载入对比引擎…</p> : null}
+      {loading ? <p className="text-sm text-slate-600">{locale === 'zh' ? '正在载入对比引擎…' : 'Loading diff engine…'}</p> : null}
       <div className={toolConverterEditorGridClass}>
         <ToolCodeMirror value={left} onChange={setLeft} rows={16} language="plaintext" variant="in" />
         <ToolCodeMirror value={right} onChange={setRight} rows={16} language="plaintext" variant="in" />

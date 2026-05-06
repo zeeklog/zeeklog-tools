@@ -4,9 +4,11 @@ import { JSONPath } from 'jsonpath-plus'
 import { useMemo, useRef, useState } from 'react'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolInputClass, toolLabelClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import { assertInputWithinLimit } from '@/lib/tools/runtime-limits'
 
 export function JsonpathTesterTool() {
+  const locale = useToolLocale()
   const [jsonText, setJsonText] = useState('{"store":{"book":[{"title":"A"}]}}')
   const [path, setPath] = useState('$.store.book[*].title')
   const outRef = useRef<ToolCodeEditorHandle | null>(null)
@@ -30,7 +32,15 @@ export function JsonpathTesterTool() {
         {(limitJ || limitP) && <p className="text-sm text-amber-800 lg:col-span-2">{limitJ ?? limitP}</p>}
         {err && <p className="text-sm text-red-600 lg:col-span-2">{err}</p>}
         <label className={`${toolLabelClass} lg:col-span-2`}>
-          JSONPath（如 <code className="text-xs">$.a.b</code>、<code className="text-xs">$..name</code>）
+          {locale === 'zh' ? (
+            <>
+              JSONPath（如 <code className="text-xs">$.a.b</code>、<code className="text-xs">$..name</code>）
+            </>
+          ) : (
+            <>
+              JSONPath (for example <code className="text-xs">$.a.b</code>, <code className="text-xs">$..name</code>)
+            </>
+          )}
           <input value={path} onChange={(e) => setPath(e.target.value)} className={toolInputClass} spellCheck={false} />
         </label>
         <label className={toolLabelClass}>
@@ -38,7 +48,7 @@ export function JsonpathTesterTool() {
           <ToolCodeMirror value={jsonText} onChange={setJsonText} rows={10} language="json" variant="in" />
         </label>
         <label className={toolLabelClass}>
-          结果
+          {locale === 'zh' ? '结果' : 'Output'}
           <ToolCodeMirror ref={outRef} readOnly value={out} rows={10} language="json" variant="out" />
         </label>
       </div>

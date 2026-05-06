@@ -4,9 +4,11 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolLabelClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import { decodeSafeLinksURL } from '@/lib/tools/logic/safelink'
 
 export function SafelinkDecoderTool() {
+  const locale = useToolLocale()
   const [input, setInput] = useState('')
   const outRef = useRef<ToolCodeEditorHandle | null>(null)
 
@@ -33,7 +35,7 @@ export function SafelinkDecoderTool() {
           />
         </label>
         <label className={toolLabelClass}>
-          解码结果
+          {locale === 'zh' ? '解码结果' : 'Decoded output'}
           <ToolCodeMirror
             ref={outRef}
             readOnly
@@ -51,7 +53,7 @@ export function SafelinkDecoderTool() {
           onClick={() => void navigator.clipboard.writeText(output)}
           className="rounded-lg border border-gray-200 px-4 py-2 text-sm"
         >
-          复制结果
+          {locale === 'zh' ? '复制结果' : 'Copy output'}
         </button>
       </div>
     </ToolShortcutArea>

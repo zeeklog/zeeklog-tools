@@ -4,9 +4,11 @@ import { useMemo, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolLabelClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import { convertTextToUnicode, convertUnicodeToText } from '@/lib/tools/logic/text-unicode'
 
 export function TextToUnicodeTool() {
+  const locale = useToolLocale()
   const [inputText, setInputText] = useState('')
   const [inputUnicode, setInputUnicode] = useState('')
   const [hint, setHint] = useState('')
@@ -25,28 +27,28 @@ export function TextToUnicodeTool() {
   const copy = async (text: string) => {
     if (!text) return
     await navigator.clipboard.writeText(text)
-    setHint('已复制')
+    setHint(locale === 'zh' ? '已复制' : 'Copied')
     window.setTimeout(() => setHint(''), 2000)
   }
 
   return (
     <div className="space-y-10">
       <ToolShortcutArea focusRef={textToUniOutRef} showShortcutHint={false} className={toolSectionClass}>
-        <h2 className="text-base font-semibold text-gray-900">文本 → Unicode 实体</h2>
+        <h2 className="text-base font-semibold text-gray-900">{locale === 'zh' ? '文本 → Unicode 实体' : 'Text → Unicode entities'}</h2>
         <div className={toolConverterEditorGridClass}>
           <label className={toolLabelClass}>
-            文本
+            {locale === 'zh' ? '文本' : 'Text'}
             <ToolCodeMirror
               value={inputText}
               onChange={setInputText}
               rows={4}
               language="plaintext"
               variant="in"
-              placeholder="例如 Hello"
+              placeholder={locale === 'zh' ? '例如 Hello' : 'For example: Hello'}
             />
           </label>
           <label className={toolLabelClass}>
-            Unicode 实体
+            {locale === 'zh' ? 'Unicode 实体' : 'Unicode entities'}
             <ToolCodeMirror
               ref={textToUniOutRef}
               readOnly
@@ -64,16 +66,16 @@ export function TextToUnicodeTool() {
             onClick={() => copy(unicodeFromText)}
             className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
           >
-            复制 Unicode
+            {locale === 'zh' ? '复制 Unicode' : 'Copy Unicode'}
           </button>
         </div>
       </ToolShortcutArea>
 
       <ToolShortcutArea focusRef={uniToTextOutRef} className={toolSectionClass}>
-        <h2 className="text-base font-semibold text-gray-900">Unicode 实体 → 文本</h2>
+        <h2 className="text-base font-semibold text-gray-900">{locale === 'zh' ? 'Unicode 实体 → 文本' : 'Unicode entities → Text'}</h2>
         <div className={toolConverterEditorGridClass}>
           <label className={toolLabelClass}>
-            Unicode 实体
+            {locale === 'zh' ? 'Unicode 实体' : 'Unicode entities'}
             <ToolCodeMirror
               value={inputUnicode}
               onChange={setInputUnicode}
@@ -84,7 +86,7 @@ export function TextToUnicodeTool() {
             />
           </label>
           <label className={toolLabelClass}>
-            文本
+            {locale === 'zh' ? '文本' : 'Text'}
             <ToolCodeMirror ref={uniToTextOutRef} readOnly value={textFromUnicode} rows={4} language="plaintext" variant="out" />
           </label>
         </div>
@@ -95,7 +97,7 @@ export function TextToUnicodeTool() {
             onClick={() => copy(textFromUnicode)}
             className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
           >
-            复制文本
+            {locale === 'zh' ? '复制文本' : 'Copy text'}
           </button>
         </div>
       </ToolShortcutArea>

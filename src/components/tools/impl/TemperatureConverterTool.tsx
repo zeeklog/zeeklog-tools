@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import {
   convertCelsiusToKelvin,
   convertDelisleToKelvin,
@@ -42,20 +43,33 @@ const fromK: Record<Scale, (k: number) => number> = {
   romer: convertKelvinToRomer,
 }
 
-const labels: Record<Scale, string> = {
-  kelvin: '开尔文 (K)',
-  celsius: '摄氏 (°C)',
-  fahrenheit: '华氏 (°F)',
-  rankine: '兰氏 (°R)',
-  delisle: '德利尔 (°De)',
-  newton: '牛顿 (°N)',
-  reaumur: '列氏 (°Ré)',
-  romer: '罗氏 (°Rø)',
-}
-
 export function TemperatureConverterTool() {
+  const locale = useToolLocale()
   const [scale, setScale] = useState<Scale>('celsius')
   const [val, setVal] = useState('0')
+
+  const labels: Record<Scale, string> =
+    locale === 'zh'
+      ? {
+          kelvin: '开尔文 (K)',
+          celsius: '摄氏 (°C)',
+          fahrenheit: '华氏 (°F)',
+          rankine: '兰氏 (°R)',
+          delisle: '德利尔 (°De)',
+          newton: '牛顿 (°N)',
+          reaumur: '列氏 (°Ré)',
+          romer: '罗氏 (°Rø)',
+        }
+      : {
+          kelvin: 'Kelvin (K)',
+          celsius: 'Celsius (°C)',
+          fahrenheit: 'Fahrenheit (°F)',
+          rankine: 'Rankine (°R)',
+          delisle: 'Delisle (°De)',
+          newton: 'Newton (°N)',
+          reaumur: 'Reaumur (°Ré)',
+          romer: 'Romer (°Rø)',
+        }
 
   const kelvin = useMemo(() => {
     const n = Number(val)
@@ -80,7 +94,7 @@ export function TemperatureConverterTool() {
         </select>
         <input value={val} onChange={(e) => setVal(e.target.value)} className="w-32 rounded border px-2 py-1 font-mono text-sm" />
       </div>
-      {all === null && <p className="text-sm text-red-600">请输入数字</p>}
+      {all === null && <p className="text-sm text-red-600">{locale === 'zh' ? '请输入数字' : 'Please enter a number'}</p>}
       {all && (
         <dl className="grid gap-2 sm:grid-cols-2">
           {all.map(({ scale: s, value }) => (

@@ -6,6 +6,7 @@ import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import type { ToolCodemirrorLang } from '@/components/tools/tool-codemirror-lang'
 import { toolConverterEditorGridClass, toolLabelClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 import {
   parseCurlCommand,
   parsedCurlToAxiosTs,
@@ -28,6 +29,7 @@ function tabToOutLang(tab: Tab): ToolCodemirrorLang {
 }
 
 export function CurlToCodeTool() {
+  const locale = useToolLocale()
   const [raw, setRaw] = useState(SAMPLE)
   const [tab, setTab] = useState<Tab>('fetch')
   const [hint, setHint] = useState('')
@@ -50,12 +52,24 @@ export function CurlToCodeTool() {
   return (
     <div className="space-y-8">
       <section className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 text-sm leading-relaxed text-slate-700">
-        <h2 className="text-base font-semibold text-slate-900">curl 转代码</h2>
+        <h2 className="text-base font-semibold text-slate-900">{locale === 'zh' ? 'curl 转代码' : 'curl to code'}</h2>
         <p className="mt-2">
-          解析常见 <code className="rounded bg-white px-1 text-xs">curl</code> 片段：<code className="rounded bg-white px-1 text-xs">-X</code>、
-          <code className="rounded bg-white px-1 text-xs">-H</code>、<code className="rounded bg-white px-1 text-xs">-d</code> /{' '}
-          <code className="rounded bg-white px-1 text-xs">--data-raw</code>、URL 引号形式、<code className="rounded bg-white px-1 text-xs">-k</code>
-          。复杂 cookie 文件、多 part 上传等需手工补全。
+          {locale === 'zh' ? (
+            <>
+              解析常见 <code className="rounded bg-white px-1 text-xs">curl</code> 片段：
+              <code className="rounded bg-white px-1 text-xs">-X</code>、<code className="rounded bg-white px-1 text-xs">-H</code>、
+              <code className="rounded bg-white px-1 text-xs">-d</code> / <code className="rounded bg-white px-1 text-xs">--data-raw</code>
+              、URL 引号形式、<code className="rounded bg-white px-1 text-xs">-k</code>。复杂 cookie 文件、多 part 上传等需手工补全。
+            </>
+          ) : (
+            <>
+              Parses common <code className="rounded bg-white px-1 text-xs">curl</code> flags:
+              <code className="rounded bg-white px-1 text-xs">-X</code>, <code className="rounded bg-white px-1 text-xs">-H</code>,
+              <code className="rounded bg-white px-1 text-xs">-d</code> / <code className="rounded bg-white px-1 text-xs">--data-raw</code>,
+              quoted URL formats, and <code className="rounded bg-white px-1 text-xs">-k</code>. Complex cookie files and multipart uploads may
+              need manual adjustments.
+            </>
+          )}
         </p>
       </section>
 
@@ -91,11 +105,11 @@ export function CurlToCodeTool() {
       <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>
         <div className={toolConverterEditorGridClass}>
           <label className={toolLabelClass}>
-            curl 命令
+            {locale === 'zh' ? 'curl 命令' : 'curl command'}
             <ToolCodeMirror value={raw} onChange={setRaw} rows={8} language="shell" variant="in" />
           </label>
           <label className={toolLabelClass}>
-            生成代码
+            {locale === 'zh' ? '生成代码' : 'Generated code'}
             <ToolCodeMirror ref={outRef} readOnly value={out} rows={14} language={outLang} variant="out" />
           </label>
         </div>
@@ -104,13 +118,13 @@ export function CurlToCodeTool() {
             type="button"
             onClick={async () => {
               await navigator.clipboard.writeText(out)
-              setHint('已复制')
+              setHint(locale === 'zh' ? '已复制' : 'Copied')
               window.setTimeout(() => setHint(''), 2000)
             }}
             disabled={!out}
             className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            复制结果
+            {locale === 'zh' ? '复制结果' : 'Copy output'}
           </button>
         </div>
       </ToolShortcutArea>
@@ -118,14 +132,14 @@ export function CurlToCodeTool() {
       {hint ? <p className="text-center text-sm text-green-700">{hint}</p> : null}
 
       <section className="border-t border-slate-100 pt-6">
-        <h2 className="text-base font-semibold text-slate-900">相关工具</h2>
+        <h2 className="text-base font-semibold text-slate-900">{locale === 'zh' ? '相关工具' : 'Related tools'}</h2>
         <ul className="mt-3 flex flex-wrap gap-2 text-sm">
           <li>
             <Link
               href="/tools/url-encoder"
               className="rounded-lg border border-orange-100 bg-orange-50/80 px-3 py-1.5 text-orange-900 hover:border-orange-200"
             >
-              URL 编码
+              {locale === 'zh' ? 'URL 编码' : 'URL encode'}
             </Link>
           </li>
           <li>
@@ -133,7 +147,7 @@ export function CurlToCodeTool() {
               href="/tools/jwt-parser"
               className="rounded-lg border border-orange-100 bg-orange-50/80 px-3 py-1.5 text-orange-900 hover:border-orange-200"
             >
-              JWT 解析
+              {locale === 'zh' ? 'JWT 解析' : 'JWT parser'}
             </Link>
           </li>
         </ul>

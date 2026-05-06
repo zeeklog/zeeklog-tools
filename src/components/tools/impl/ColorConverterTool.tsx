@@ -2,8 +2,10 @@
 
 import { colord } from 'colord'
 import { useMemo, useState } from 'react'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function ColorConverterTool() {
+  const locale = useToolLocale()
   const [hex, setHex] = useState('#ff6600')
 
   const info = useMemo(() => {
@@ -22,7 +24,7 @@ export function ColorConverterTool() {
         <input type="color" value={info?.hex ?? '#000000'} onChange={(e) => setHex(e.target.value)} className="h-12 w-20 cursor-pointer rounded border" />
         <input value={hex} onChange={(e) => setHex(e.target.value)} className="flex-1 rounded border px-3 py-2 font-mono text-sm" />
       </div>
-      {!info && <p className="text-sm text-red-600">无效颜色</p>}
+      {!info && <p className="text-sm text-red-600">{locale === 'zh' ? '无效颜色' : 'Invalid color'}</p>}
       {info && (
         <div className="space-y-2 rounded-xl border p-4" style={{ borderColor: info.hex }}>
           <div className="h-16 w-full rounded" style={{ backgroundColor: info.hex }} />

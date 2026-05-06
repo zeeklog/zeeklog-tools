@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 type Snap = {
   screenAvail: string
@@ -44,6 +45,7 @@ function InfoBlock({ label, value }: { label: string; value: string }) {
 }
 
 export function DeviceInformationTool() {
+  const locale = useToolLocale()
   const [snap, setSnap] = useState<Snap | null>(null)
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export function DeviceInformationTool() {
   }, [])
 
   if (!snap) {
-    return <p className="text-sm text-gray-500">正在读取设备信息…</p>
+    return <p className="text-sm text-gray-500">{locale === 'zh' ? '正在读取设备信息…' : 'Reading device information…'}</p>
   }
 
   return (

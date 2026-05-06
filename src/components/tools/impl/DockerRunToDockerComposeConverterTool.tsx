@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import { ToolShortcutArea } from '@/components/tools/ToolShortcutArea'
 import { ToolCodeMirror, type ToolCodeEditorHandle } from '@/components/tools/ToolCodeMirror'
 import { toolConverterEditorGridClass, toolSectionClass } from '@/components/tools/tool-field-classes'
+import { useToolLocale } from '@/components/tools/tool-locale'
 
 export function DockerRunToDockerComposeConverterTool() {
+  const locale = useToolLocale()
   const [raw, setRaw] = useState('docker run -p 80:80 nginx')
   const [out, setOut] = useState('')
   const [err, setErr] = useState('')
@@ -42,7 +44,7 @@ export function DockerRunToDockerComposeConverterTool() {
   return (
     <ToolShortcutArea focusRef={outRef} className={toolSectionClass}>
       <div className={toolConverterEditorGridClass}>
-        {loading && <p className="text-sm text-gray-500 lg:col-span-2">转换中…</p>}
+        {loading && <p className="text-sm text-gray-500 lg:col-span-2">{locale === 'zh' ? '转换中…' : 'Converting…'}</p>}
         {err && <p className="text-sm text-red-600 lg:col-span-2">{err}</p>}
         <label className="block text-sm font-medium text-slate-800">
           docker run
