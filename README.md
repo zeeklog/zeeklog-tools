@@ -248,7 +248,3 @@ tests          测试
 | [随机新西兰地址生成器](https://zeeklog.com/tools/newzealand-address-generator) | 随机生成新西兰地址（支持北岛/南岛筛选），支持数量快捷选择、显示全部与下载。 |
 | [随机西班牙地址生成器](https://zeeklog.com/tools/spain-address-generator) | 随机生成西班牙地址（支持马德里、加泰罗尼亚、安达卢西亚、瓦伦西亚筛选），支持数量快捷选择、显示全部与下载。 |
 
-## 说明
-
-- 已移除旧的 Vite、Prisma、数据库和临时资源
-- 新增或调整工具后，先跑 `pnpm verify:tools`
