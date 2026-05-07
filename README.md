@@ -23,7 +23,7 @@ pnpm dev
 `.env.example` 仅保留公开部署常用变量：
 
 - `SITE_URL`：公开站点根地址
-- `PORT`：生产启动端口
+- `PORT`：生产端口
 
 ## 部署
 
