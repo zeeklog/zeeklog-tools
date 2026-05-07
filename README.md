@@ -1,6 +1,6 @@
 # 极客日志（zeeklog.com）在线工具箱
 
-开源整理版的在线工具站，沿用 `zeeklog.com` 品牌与 SEO。当前是纯前端 + Next.js 应用，不再依赖 Prisma 或数据库。
+zeeklig.com开源整理版的在线工具站。当前是纯前端 + Next.js 应用。
 
 ![alt text](examples/example-1.png)
 ![alt text](examples/example-2.png)
